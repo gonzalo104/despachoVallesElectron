@@ -14,9 +14,11 @@ function createWindow() {
         slashes : true
     });
     
-    mainWindow = new BrowserWindow({width: 900, height: 600});
-    //mainWindow.loadURL('http://localhost:3000');
+    mainWindow = new BrowserWindow({show: false});
     mainWindow.loadURL(startUrl);
+    mainWindow.maximize();
+    mainWindow.setMenu(null)
+    mainWindow.show();
     mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function () {
         mainWindow = null
@@ -24,6 +26,7 @@ function createWindow() {
 }
 
 app.on('ready', createWindow);
+
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         app.quit()
@@ -31,7 +34,6 @@ app.on('window-all-closed', function () {
 });
 
 app.on('activate', function () {
-  
     if (mainWindow === null) {
         createWindow()
     }
