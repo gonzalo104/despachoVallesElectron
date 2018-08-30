@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Dropdown, Menu } from 'semantic-ui-react'
-import  'styles.css';
+import  './styles.css';
 
 export default class Home extends Component {
   state = { activeItem: 'Clientes' }
