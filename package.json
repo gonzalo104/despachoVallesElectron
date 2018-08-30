@@ -1,21 +1,26 @@
 {
-  "name": "despachovalles",
-  "version": "0.1.0",
-  "private": true,
+  "name"        : "despachovalles",
+  "version"     : "0.1.0",
+  "private"     : true,
   "dependencies": {
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
+    "react"        : "^16.4.2",
+    "react-dom"    : "^16.4.2",
     "react-scripts": "1.1.5"
   },
-  "main": "./electron-starter.js",
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "electron": "electron ."
+  "homepage": "./",
+  "main"    : "src/electron-starter.js",
+  "scripts" : {
+    "start"       : "react-scripts start",
+    "build"       : "react-scripts build",
+    "test"        : "react-scripts test --env=jsdom",
+    "eject"       : "react-scripts eject",
+    "electron"    : "electron .",
+    "dev"         : "concurrently \"npm start\" \"npm run electron-dev\"",
+    "electron-dev": "cross-env ELECTRON_START_URL=http://localhost:3000 electron ."
   },
   "devDependencies": {
-    "electron": "^2.0.8"
+    "concurrently": "^4.0.1",
+    "cross-env"   : "^5.2.0",
+    "electron"    : "^2.0.8"
   }
 }
