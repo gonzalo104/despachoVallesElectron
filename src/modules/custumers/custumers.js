@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Header, Table} from 'semantic-ui-react'
+import { Container, Header, Table, Grid} from 'semantic-ui-react'
 
 const tableData = [
 { name: undefined, status: undefined, notes: undefined },
@@ -8,25 +8,29 @@ const tableData = [
 { name: 'Jill', status: undefined, notes: undefined },
 ]
 
-const headerRow = ['Name', 'Status', 'Notes']
+const headerRow = ['Nombre', 'Status', 'Notes']
 
 const renderBodyRow = ({ name, status, notes }, i) => ({
 key: name || `row-${i}`,
 warning: !!(status && status.match('Requires Action')),
 cells: [
   name || 'No name specified',
-  status ? { key: 'status', icon: 'attention', content: status } : 'Unknown',
   notes ? { key: 'notes', icon: 'attention', content: notes, warning: true } : 'None',
+  status ? { key: 'status', icon: 'attention', content: status } : 'Unknown',
 ],
 })
 
 export default class Custumers extends Component {
   render() {
     return (
-        <Container text>
-    <Header as='h2'>Header</Header>
-    <Table celled headerRow={headerRow} renderBodyRow={renderBodyRow} tableData={tableData} />
-  </Container>
+    <Container>
+    <Header as='h2'>Clientes</Header>
+     <Grid>
+      <Grid.Column width={16}>
+        <Table celled headerRow={headerRow} renderBodyRow={renderBodyRow} tableData={tableData} />
+      </Grid.Column>
+    </Grid>
+    </Container>
     )
   }
 }

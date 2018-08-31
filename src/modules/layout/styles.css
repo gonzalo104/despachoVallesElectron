@@ -1,3 +1,13 @@
 .ui.menu{
-    background-color: aqua;
+    background-color: #4387ff;
+}
+
+.ui.menu .active.item{
+    font-weight: 900;
+    background: rgb(177, 177, 177);
+}
+
+.ui.menu .item{
+    font-weight: 900;
+    
 }
