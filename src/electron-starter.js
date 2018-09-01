@@ -3,6 +3,7 @@ const app           = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path          = require('path');
 const url           = require('url');
+const db            = require('./db/index')
 
 let mainWindow;
 
@@ -38,3 +39,4 @@ app.on('activate', function () {
         createWindow()
     }
 });
+
