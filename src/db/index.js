@@ -1,5 +1,5 @@
 const sequelize = require('./models/config');
-const Appointment = require('./models/appointment');
+//const Appointment = require('./models/appointment');
 const queries     = () => {
    
 }

@@ -1,8 +1,13 @@
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('despachovalles', 'sa', 'gonzalozame04', {
-  host            : 'localhost',
+  host            : ' ',
   dialect         : 'mssql',
   operatorsAliases: false,
+  dialectOptions: {
+    encrypt: true,
+    instanceName: 'SQLEXPRESS',
+    requestTimeout: 30000 
+  },
 
   pool: {
     max    : 5,
@@ -14,7 +19,8 @@ const sequelize = new Sequelize('despachovalles', 'sa', 'gonzalozame04', {
 
 
 const config = () => {
-    sequelize.authenticate().then(() => { console.log("Estas conectado men xD!")}).catch(err => { console.log("no pudiste conectarte :(")})
+    sequelize.authenticate().then(() => { console.log("Estas conectado men xD!")}).catch(err => {
+       console.log("no pudiste conectarte :(", err)})
     return sequelize;
 }
 
