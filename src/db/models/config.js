@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
+
 const sequelize = new Sequelize('despachovalles', 'sa', 'gonzalozame04', {
-  host            : ' ',
+  host            : 'DESKTOP-HTB2RFD',
   dialect         : 'mssql',
   operatorsAliases: false,
   dialectOptions: {
@@ -17,11 +18,4 @@ const sequelize = new Sequelize('despachovalles', 'sa', 'gonzalozame04', {
   },  
 });
 
-
-const config = () => {
-    sequelize.authenticate().then(() => { console.log("Estas conectado men xD!")}).catch(err => {
-       console.log("no pudiste conectarte :(", err)})
-    return sequelize;
-}
-
-module.exports = config();
+module.exports = sequelize;

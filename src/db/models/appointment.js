@@ -1,26 +1,21 @@
+const Sequelize = require('sequelize');
+const sequelize = require('./config');
 
-const sequelize = require('sequelize');
-
-const Appointment = sequelize.define('appointment', {
+const Appointment = sequelize.define('Appointment', {
     id: {
-      type: sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    date_appountment:{
-        type: sequelize.DATE
-    },
-    custumer_id:{
-        type: sequelize.INTEGER
-    },
-    comments:{
-        type: sequelize.STRING
-    },
-    created_at:{
-        type: sequelize.DATE
-    },
-    updated_at:{
-        type: sequelize.DATE
-    }
+    date_appountment: Sequelize.DATE,
+    custumer_id: Sequelize.INTEGER,
+    comments: Sequelize.STRING,
+    created_at: Sequelize.DATE,
+    updated_at: Sequelize.DATE,
+  },{
+    tableName: 'appointment',
+    timestamps: false,
+    underscored: true,
   });
-  
-  module.exports = Appointment;
  
+  module.exports = Appointment;
