@@ -3,11 +3,12 @@ const app           = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path          = require('path');
 const url           = require('url');
-const Appointment            = require('./db/models/appointment');
+const db = require('./db/index');
+
 
 let mainWindow;
 
-Appointment.findAll().then(obj => { console.log(obj) }).catch(err => console.log(err));
+db.Appointment.findAll().then(obj => { console.log(obj) }).catch(err => console.log("errores*******",err));
 
 function createWindow() {
 

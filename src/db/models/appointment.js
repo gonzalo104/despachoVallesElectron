@@ -1,7 +1,6 @@
-const Sequelize = require('sequelize');
-const sequelize = require('./config');
+module.exports = (sequelize, Sequelize) => {
 
-const Appointment = sequelize.define('Appointment', {
+  const Appointment = sequelize.define('Appointment', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
@@ -18,4 +17,9 @@ const Appointment = sequelize.define('Appointment', {
     underscored: true,
   });
  
-  module.exports = Appointment;
+  return Appointment; 
+
+};
+
+
+ 
