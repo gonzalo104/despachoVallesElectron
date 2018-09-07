@@ -1,14 +1,15 @@
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('despachovalles', 'sa', 'gonzalozame04', {
-  host            : 'DESKTOP-HTB2RFD',
+  //host            : 'DESKTOP-HTB2RFD',
+  host            : 'localhost',
   dialect         : 'mssql',
   operatorsAliases: false,
-  dialectOptions: {
-    encrypt: true,
-    instanceName: 'SQLEXPRESS',
-    requestTimeout: 30000 
-  },
+  /*dialectOptions: {
+    encrypt       : true,
+    instanceName  : 'SQLEXPRESS',
+    requestTimeout: 30000
+  },*/
 
   pool: {
     max    : 5,
@@ -18,11 +19,12 @@ const sequelize = new Sequelize('despachovalles', 'sa', 'gonzalozame04', {
   },  
 });
 
-const db = {};
-db.Sequelize = Sequelize;  
-db.sequelize = sequelize;
+const db           = {};
+      db.Sequelize = Sequelize;
+      db.sequelize = sequelize;
 
 db.Appointment = require('./models/appointment')(sequelize, Sequelize);
+db.File        = require('./models/test-file')(sequelize, Sequelize);
 
 sequelize.sync()
 
