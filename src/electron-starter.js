@@ -3,13 +3,13 @@ const app           = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path          = require('path');
 const url           = require('url');
-      global.db     = require('./db/index');
+const db            = require('./db/index');
 
 
 
 let mainWindow;
 
-db.Appointment.findAll().then(obj => { console.log(obj) }).catch(err => console.log("errores*******",err));
+//db.Appointment.findAll().then(obj => { console.log(obj) }).catch(err => console.log("errores*******",err));
 
 function createWindow() {
 

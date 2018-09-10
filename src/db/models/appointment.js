@@ -6,9 +6,24 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey   : true,
       autoIncrement: true,
     },
-    date_appountment: Sequelize.DATE,
-    custumer_id     : Sequelize.INTEGER,
-    comments        : Sequelize.STRING,
+    date_appointment: {
+      type     : Sequelize.DATE,
+      allowNull: false,
+    },
+    custumer_id: {
+      type     : Sequelize.INTEGER,
+      allowNull: false,
+
+    },
+    lawyer_id:{
+      type     : Sequelize.INTEGER,
+      allowNull: false,
+    },
+    comments   : {
+      type        : Sequelize.STRING,
+      allowNull   : true,
+      defaultValue: null,
+    }
   }
   );
  
