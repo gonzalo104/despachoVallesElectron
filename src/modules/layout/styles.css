@@ -1,13 +1,16 @@
 .ui.menu{
-    background-color: #65a9ff;
+    background-color: #2185d0;
+    color: white;
 }
 
 .ui.menu .active.item{
+    color: white;
     font-weight: 900;
-    background : rgb(177, 177, 177);
+    background :none;
 }
 
 .ui.menu .item{
+    color: white;
     font-weight: 900;
     
 }
