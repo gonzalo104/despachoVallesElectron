@@ -3,16 +3,22 @@ import { Container, Header, Table, Grid} from 'semantic-ui-react';
 const {ipcRenderer} = window.require('electron')
 
 
-const headerRow = ['Nombre', 'Status', 'Notes']
+const headerRow = ['Nombre', 'Correo', 'Télefono', 'Celular', 'Tipo','Comentarios', 'Acciones']
 
-const renderBodyRow = ({ name, comments, email }, i) => ({
-key  : name || `row-${i}`,
-cells: [
-  name ,
-  comments ? comments: 'None',
-  email    ? email   : 'Unknown',
-],
-})
+const renderBodyRow = (data, i) => {
+  return ({
+    key  : data.dataValues.name || `row-${i}`,
+    cells: [
+      data.dataValues.name ,
+      data.dataValues.email    ? data.dataValues.email   : 'N/A',
+      data.dataValues.phone ? data.dataValues.phone: 'N/A',
+      data.dataValues.movil ? data.dataValues.movil: 'N/A',
+      data.dataValues.type_custumer ? data.dataValues.type_custumer: 'N/A',
+      data.dataValues.comments ? data.dataValues.comments: 'N/A',
+      'Editar, Eliminar'
+    ],
+    });
+} 
 
 export default class Custumers extends Component {
   
@@ -20,17 +26,12 @@ export default class Custumers extends Component {
     custumers: [],
   }
 
- tableData = this.state.custumers;
-
   componentDidMount(){
 
     ipcRenderer.on('list-custumers-reply', (event, arg) => {
-      console.log(arg)
-      this.setState({custumers: arg.dataValues});
+      this.setState({custumers: arg});
     })
     ipcRenderer.send('list-custumers', 'ping')
-
-
   }
 
   render() {
@@ -39,7 +40,7 @@ export default class Custumers extends Component {
     <Header as='h2'>Clientes</Header>
      <Grid>
       <Grid.Column width={16}>
-        <Table celled headerRow={headerRow} renderBodyRow={renderBodyRow} tableData={this.tableData} />
+        <Table celled headerRow={headerRow} renderBodyRow={renderBodyRow} tableData={this.state.custumers} />
       </Grid.Column>
     </Grid>
     </Container>

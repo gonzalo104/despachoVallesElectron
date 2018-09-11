@@ -1,15 +1,15 @@
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('despacho', 'sa', 'gonzalozame04', {
-  //host            : 'DESKTOP-HTB2RFD',
-  host            : 'localhost',
+  host            : 'DESKTOP-HTB2RFD',
+  //host            : 'localhost',
   dialect         : 'mssql',
   operatorsAliases: false,
-  /*dialectOptions: {
+  dialectOptions: {
     encrypt       : true,
     instanceName  : 'SQLEXPRESS',
     requestTimeout: 30000
-  },*/
+  },
 
   pool: {
     max    : 5,
