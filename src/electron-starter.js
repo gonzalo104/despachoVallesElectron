@@ -4,12 +4,9 @@ const BrowserWindow = electron.BrowserWindow;
 const path          = require('path');
 const url           = require('url');
 const db            = require('./db/index');
-
-
+const ipcMain       = require('./ipcmain/index')();
 
 let mainWindow;
-
-//db.Appointment.findAll().then(obj => { console.log(obj) }).catch(err => console.log("errores*******",err));
 
 function createWindow() {
 

@@ -45,6 +45,6 @@ db.Payment.belongsTo(db.CaseFile, {foreignKey: 'casefile_id'});
 db.Appointment.belongsTo(db.Custumer, {foreignKey: 'custumer_id'});
 db.Appointment.belongsTo(db.Lawyer, {foreignKey: 'lawyer_id'});
 
-sequelize.sync().then(() => console.log("**************** Funcionó correctamente la sincronización *********************** \n Ha trabajar!!!")).catch((err) => console.log("*****************+*** ERROR **************************: \n",err));
+//sequelize.sync().then(() => console.log("**************** Funcionó correctamente la sincronización *********************** \n Ha trabajar!!!")).catch((err) => console.log("*****************+*** ERROR **************************: \n",err));
 
 module.exports = db;

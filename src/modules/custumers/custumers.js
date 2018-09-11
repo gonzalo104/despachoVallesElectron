@@ -1,33 +1,45 @@
-import React, { Component } from 'react'
-import { Container, Header, Table, Grid} from 'semantic-ui-react'
+import React, { Component } from 'react';
+import { Container, Header, Table, Grid} from 'semantic-ui-react';
+const {ipcRenderer} = window.require('electron')
 
-const tableData = [
-{ name: undefined, status: undefined, notes: undefined },
-{ name: 'Jimmy', status: 'Requires Action', notes: undefined },
-{ name: 'Jamie', status: undefined, notes: 'Hostile' },
-{ name: 'Jill', status: undefined, notes: undefined },
-]
 
 const headerRow = ['Nombre', 'Status', 'Notes']
 
-const renderBodyRow = ({ name, status, notes }, i) => ({
-key: name || `row-${i}`,
-warning: !!(status && status.match('Requires Action')),
+const renderBodyRow = ({ name, comments, email }, i) => ({
+key  : name || `row-${i}`,
 cells: [
-  name || 'No name specified',
-  notes ? { key: 'notes', icon: 'attention', content: notes, warning: true } : 'None',
-  status ? { key: 'status', icon: 'attention', content: status } : 'Unknown',
+  name ,
+  comments ? comments: 'None',
+  email    ? email   : 'Unknown',
 ],
 })
 
 export default class Custumers extends Component {
+  
+  state = {
+    custumers: [],
+  }
+
+ tableData = this.state.custumers;
+
+  componentDidMount(){
+
+    ipcRenderer.on('list-custumers-reply', (event, arg) => {
+      console.log(arg)
+      this.setState({custumers: arg.dataValues});
+    })
+    ipcRenderer.send('list-custumers', 'ping')
+
+
+  }
+
   render() {
     return (
     <Container>
     <Header as='h2'>Clientes</Header>
      <Grid>
       <Grid.Column width={16}>
-        <Table celled headerRow={headerRow} renderBodyRow={renderBodyRow} tableData={tableData} />
+        <Table celled headerRow={headerRow} renderBodyRow={renderBodyRow} tableData={this.tableData} />
       </Grid.Column>
     </Grid>
     </Container>
