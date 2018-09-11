@@ -30,11 +30,15 @@ export default class Custumers extends Component {
   
   state = {
     custumers: [],
+    optLawyers: [],
   }
 
   componentDidMount(){
 
+    
+
     ipcRenderer.on('list-custumers-reply', (event, arg) => {
+      console.log(arg)
       this.setState({custumers: arg});
     })
     ipcRenderer.send('list-custumers', 'ping')
