@@ -76,7 +76,7 @@ export default class Custumers extends Component {
                        <Table.Cell>{obj.dataValues.comments}</Table.Cell>
                        <Table.Cell textAlign="center">  
                          <ModalSaveEdit type="edit" handleApi={this.handleApi} custumer={obj}/>                                                                 
-                         <Icon name='delete' onClick={()=>{console.log("deleted")}} />
+                         <Icon color="red" name='delete' onClick={()=>{console.log("deleted")}} />
                        </Table.Cell>
                      </Table.Row>
                    )

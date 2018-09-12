@@ -7,9 +7,6 @@ const options = [
   ]
 
 class ModalSaveEdit extends Component {  
-
-   
-
             
         state = {
             type         : this.props.type,
@@ -27,7 +24,7 @@ class ModalSaveEdit extends Component {
 
   
     typeButton() {
-        let button = this.props.type === 'new' ? <Button positive onClick={this.openModal}>Nuevo Cliente</Button> : <Icon name="edit" onClick={this.openModal}></Icon>;
+        let button = this.props.type === 'new' ? <Button positive onClick={this.openModal}>Nuevo Cliente</Button> : <Icon color="blue" name="edit" onClick={this.openModal}></Icon>;
         return button;
     }
 
