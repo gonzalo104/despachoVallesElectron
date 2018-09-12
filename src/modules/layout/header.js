@@ -16,12 +16,8 @@ export default class Home extends Component {
         <Menu.Item name='Citas' active={activeItem === 'Citas'} onClick={this.handleItemClick}/>
         <Menu.Item name='Expedientes' active={activeItem === 'Expedientes'} onClick={this.handleItemClick}/>
         <Menu.Item name='Finanzas' active={activeItem === 'Finanzas'} onClick={this.handleItemClick}/>
-        <Menu.Item name='Catálagos' active={activeItem === 'Catálagos'} onClick={this.handleItemClick}/>
-        <Menu.Item name='Herramientas' active={activeItem === 'Herramientas'} onClick={this.handleItemClick}/>
-        <Menu.Item name='Salir' active={activeItem === 'Salir'} onClick={this.handleItemClick}/>
-
-        <Menu.Menu position='right'>
-          <Dropdown item text='Language'>
+        <Menu.Item name='Catálagos' active={activeItem === 'Catálagos'} onClick={this.handleItemClick}/>      
+        <Dropdown item text='Herramientas'>
             <Dropdown.Menu>
               <Dropdown.Item>English</Dropdown.Item>
               <Dropdown.Item>Russian</Dropdown.Item>
@@ -29,6 +25,7 @@ export default class Home extends Component {
             </Dropdown.Menu>
           </Dropdown>
 
+        <Menu.Menu position='right'>        
           <Menu.Item>
             <Button primary>Salir</Button>
           </Menu.Item>
