@@ -3,6 +3,7 @@ const app           = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path          = require('path');
 const url           = require('url');
+const settings      = require('electron-settings');
 const db            = require('./db/index');
 const ipcMain       = require('./ipcmain/index')();
 
@@ -27,7 +28,34 @@ function createWindow() {
     })
 }
 
-app.on('ready', createWindow);
+function createLogin() {
+    let windowLogin = new BrowserWindow({width: 400, height: 500, center:true, resizable:false, 
+                                     minimizable: false, maximizable: false, fullscreen: false,
+                                     skipTaskbar: false, title      : 'Login'});
+
+      const urlLogin = url.format({
+        pathname: path.join(__dirname, '/../login/index.html'),
+        protocol: 'file:',
+        slashes : true
+        });
+        
+      windowLogin.loadURL(urlLogin)
+
+      windowLogin.on('closed', () => {
+        windowLogin = null
+      })
+
+}
+
+
+settings.delete('auth');
+
+if(settings.has('auth')){
+    app.on('ready', createWindow);
+}else{
+    app.on('ready', createLogin);
+}
+
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {

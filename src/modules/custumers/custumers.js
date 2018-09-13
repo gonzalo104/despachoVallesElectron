@@ -11,11 +11,27 @@ const options = [
 ]
 
 export default class Custumers extends Component {
-  
-  state = {
-    custumers : [],
-    optLawyers: [],
+
+
+  constructor(){
+    super()
+    this.state = {
+      openModal    : false,
+      typeModal    : '',
+      custumers    : [],
+      optLawyers   : [],
+      id           : 0,
+      name         : '',
+      email        : '',
+      movil        : '',
+      phone        : '',
+      lawyer_id    : '',
+      type_custumer: '',
+      comments     : '',
+    }
   }
+  
+  
 
   componentDidMount(){
     ipcRenderer.on('list-custumers-reply', (event, arg) => {
@@ -23,11 +39,51 @@ export default class Custumers extends Component {
       this.setState({custumers: arg});
     })
     ipcRenderer.send('list-custumers', 'ping')
-  }
+  } 
 
   handleApi = (obj) => {
     console.log("jalo: ", obj)
   }
+
+  closeModal = () => {
+    this.setState({openModal: false});
+    this.clearForm();
+  }
+
+
+  handleChangeForm = (e, {value ,name}) => {
+    console.log(name, value)
+    this.setState({[name]: value,});    
+  }
+
+  clearForm = () =>{
+    this.setState({  
+      id           : 0,
+      name         : '',
+      email        : '',
+      movil        : '',
+      phone        : '',
+      lawyer_id    : '',
+      type_custumer: '',
+      comments     : '',
+    });
+  }
+
+  prepareModal = (obj) => {
+    this.setState({
+      openModal    : true,
+      typeModal    : 'edit',
+      id           : obj.dataValues.id,
+      name         : obj.dataValues.name,
+      email        : obj.dataValues.email ? obj.dataValues.email      : '',
+      movil        : obj.dataValues.movil ? obj.dataValues.movil      : '',
+      phone        : obj.dataValues.phone ? obj.dataValues.phone      : '',
+      lawyer_id    : obj.dataValues.lawyer_id,
+      type_custumer: obj.dataValues.type_custumer,
+      comments     : obj.dataValues.comments ? obj.dataValues.comments: '',
+    });
+  }
+
 
   render() {
     return (
@@ -37,8 +93,8 @@ export default class Custumers extends Component {
       <Header as='h1' floated='left'>
         Clientes
       </Header>
-      <Header floated='right'>
-        <ModalSaveEdit custumer={'null'} type="new" handleApi={this.handleApi}/>
+      <Header floated='right'>                
+          <Button positive onClick={ () => {this.setState({openModal: true, typeModal: 'new'})}} >Nuevo Cliente</Button>      
       </Header>
       <Header as='h5' floated='right'>
       <Select placeholder='Selecciona un abogado' options={options} />
@@ -74,14 +130,14 @@ export default class Custumers extends Component {
                        <Table.Cell>{obj.Lawyer.dataValues.name}</Table.Cell>
                        <Table.Cell>{obj.dataValues.type_custumer}</Table.Cell>
                        <Table.Cell>{obj.dataValues.comments}</Table.Cell>
-                       <Table.Cell textAlign="center">  
-                         <ModalSaveEdit type="edit" handleApi={this.handleApi} custumer={obj}/>                                                                 
+                       <Table.Cell textAlign="center">                                                                                        
+                         <Icon color="blue" name='edit' onClick={ () => this.prepareModal(obj)} />
                          <Icon color="red" name='delete' onClick={()=>{console.log("deleted")}} />
                        </Table.Cell>
                      </Table.Row>
                    )
                     
-                  })
+                  })  
                 }                                                                    
               </Table.Body>
 
@@ -96,7 +152,9 @@ export default class Custumers extends Component {
         
       </Grid.Column>
     </Grid>
-    </Container>
+       <ModalSaveEdit openM={this.state.openModal} type={this.state.typeModal} closeModal={this.closeModal} handleChange={this.handleChangeForm} values={this.state}/>
+    </Container>        
+
     )
   }
 }
