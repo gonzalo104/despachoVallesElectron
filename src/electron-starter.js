@@ -5,9 +5,13 @@ const path          = require('path');
 const url           = require('url');
 const settings      = require('electron-settings');
 const db            = require('./db/index');
-const ipcMain       = require('./ipcmain/index')();
+const ipc           = require('./ipcmain/index')();
+const {ipcMain}     = require('electron');
+const bcrypt        = require('bcrypt');
 
 let mainWindow;
+
+//createUsers()
 
 function createWindow() {
 
@@ -38,17 +42,16 @@ function createLogin() {
         protocol: 'file:',
         slashes : true
         });
-        
-      windowLogin.loadURL(urlLogin)
 
+      windowLogin.webContents.openDevTools();  
+      windowLogin.loadURL(urlLogin)
       windowLogin.on('closed', () => {
         windowLogin = null
+        settings.delete('auth');
       })
-
+      
+      ipcMainLogin();
 }
-
-
-settings.delete('auth');
 
 if(settings.has('auth')){
     app.on('ready', createWindow);
@@ -59,7 +62,8 @@ if(settings.has('auth')){
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
-        app.quit()
+        app.quit();
+        settings.delete('auth');
     }
 });
 
@@ -68,4 +72,28 @@ app.on('activate', function () {
         createWindow()
     }
 });
+
+
+
+function ipcMainLogin(){
+    ipcMain.on('loginMain', async (event, arg) => {               
+        let findUser = await db.sequelize.query(`SELECT * FROM Users Where username='${arg.username}' COLLATE Latin1_General_CS_AS_KS_WS  ORDER BY id OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY `,{ type: db.sequelize.QueryTypes.SELECT});
+        if (findUser.length>0) {                
+            console.log("si existe el usuario")           
+        }else{
+            console.log("no existe")
+        }
+        event.sender.send('loginRender', 'pong')
+         
+       });
+}
+
+
+ async function createUsers(){
+   let user1 = await db.User.create({name    : 'Usuario Master',email   : 'master@example.com', username: 'MasterDes', password: bcrypt.hashSync('MasterGonGo', 10), rol     : 'Master'});
+   if (user1) {
+       console.log("guardo Correctamente")
+   }
+
+}
 

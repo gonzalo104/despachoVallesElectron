@@ -12,11 +12,37 @@
         <div class="form">   
             <img src="./user.png" alt="usuario" width="140" >
           <form class="login-form">
-            <input type="text" placeholder="Usuario"/>
-            <input type="password" placeholder="Contraseña"/>
-            <button><b>Entrar</b></button>           
+            <input id="username" type="text" placeholder="Usuario"/>
+            <input id="password" type="password" placeholder="Contraseña"/>
+            <button id="submit"><b>Entrar</b></button>           
           </form>
         </div>
       </div>
 </body>
+  <script>
+    const {ipcRenderer} = window.require('electron');      
+
+    window.onload = function() {                       
+      const button = document.getElementById('submit');
+      ipcRenderer.on('loginRender', (event, arg) => {          
+          console.log(arg);
+          button.disabled = false;
+      })           
+      button.addEventListener('click',submit)
+    };
+
+    function submit(event){
+      event.preventDefault();
+      const userName = document.getElementById('username');
+      const password = document.getElementById('password');
+      if (userName.value.length < 1 || password.value.length < 1) {
+        alert("Favor de llenar los campos vacios");
+      }else{        
+        document.getElementById("submit").disabled = true;
+        ipcRenderer.send('loginMain', {username: username.value})      
+      }
+      
+    }
+  
+  </script>
 </html>

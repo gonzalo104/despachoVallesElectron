@@ -1,15 +1,17 @@
 const Sequelize = require('sequelize');
+const Op = Sequelize.Op
 
-const sequelize = new Sequelize('despacho', 'sa', 'gonzalozame04', {
+const sequelize = new Sequelize('despacho5', 'sa', 'gonzalozame04', {
   //host            : 'DESKTOP-HTB2RFD',
   host            : 'localhost',
   dialect         : 'mssql',
   operatorsAliases: false,
-  /*dialectOptions  : {
-    encrypt       : true,
-    instanceName  : 'SQLEXPRESS',
-    requestTimeout: 30000
-  },*/
+
+  dialectOptions  : {
+    //encrypt       : true,
+    //instanceName  : 'SQLEXPRESS',
+    //requestTimeout: 30000    
+  },
 
   pool: {
     max    : 5,
@@ -22,6 +24,7 @@ const sequelize = new Sequelize('despacho', 'sa', 'gonzalozame04', {
 const db           = {};
       db.Sequelize = Sequelize;
       db.sequelize = sequelize;
+      db.Op        = Op;
 
 db.User        = require('./models/user')(sequelize, Sequelize);
 db.Lawyer      = require('./models/lawyer')(sequelize, Sequelize);

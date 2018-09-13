@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bcrypt": "^3.0.0",
     "electron-settings": "^3.2.0",
     "react": "^16.4.2",
     "react-desktop": "^0.3.7",
