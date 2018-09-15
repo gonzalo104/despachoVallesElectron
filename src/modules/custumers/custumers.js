@@ -145,9 +145,7 @@ export default class Custumers extends Component {
               </Table.Footer>
             </Table>
           : 
-          <Dimmer active inverted>
-            <Loader content="Cargando..." />
-          </Dimmer>
+          <h4>No hay clientes para mostrar</h4>
         }
         
       </Grid.Column>

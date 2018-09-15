@@ -30,7 +30,7 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function () {
         mainWindow = null
-        settings.delete('auth');
+        //settings.delete('auth');
     })
 }
 
@@ -64,7 +64,7 @@ if(settings.has('auth')){
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         app.quit();
-        settings.delete('auth');
+        //settings.delete('auth');
     }
 });
 
