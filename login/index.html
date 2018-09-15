@@ -17,16 +17,28 @@
             <button id="submit"><b>Entrar</b></button>           
           </form>
         </div>
+       <div id="load" class="loader-win"><div class="loader">Espere...</div></div>
       </div>
 </body>
   <script>
-    const {ipcRenderer} = window.require('electron');      
+    const {ipcRenderer} = window.require('electron');  
+    
 
     window.onload = function() {                       
-      const button = document.getElementById('submit');
-      ipcRenderer.on('loginRender', (event, arg) => {          
-          console.log(arg);
-          button.disabled = false;
+      const button = document.getElementById('submit');      
+      ipcRenderer.on('loginRender',  (event, arg) => {                    
+          var loader = document.getElementById('load');             
+          setTimeout(function(){
+            loader.classList.remove('active');
+            if (arg.isLogin) {
+              console.log("Bienvenido a Despacho Admin")
+              ipcRenderer.send('sendHome', {})   
+            }else{
+              alert("Datos incorrectos, intente nuevamente.");
+            }          
+          },2000); 
+         
+
       })           
       button.addEventListener('click',submit)
     };
@@ -36,10 +48,11 @@
       const userName = document.getElementById('username');
       const password = document.getElementById('password');
       if (userName.value.length < 1 || password.value.length < 1) {
-        alert("Favor de llenar los campos vacios");
-      }else{        
-        document.getElementById("submit").disabled = true;
-        ipcRenderer.send('loginMain', {username: username.value})      
+        alert("Favor de llenar los campos vacios.");
+      }else{     
+        var loader = document.getElementById('load');       
+        loader.classList.add("active");
+        ipcRenderer.send('loginMain', {username: username.value, password: password.value})      
       }
       
     }

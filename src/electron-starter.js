@@ -10,6 +10,7 @@ const {ipcMain}     = require('electron');
 const bcrypt        = require('bcrypt');
 
 let mainWindow;
+let windowLogin;
 
 //createUsers()
 
@@ -29,11 +30,12 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function () {
         mainWindow = null
+        settings.delete('auth');
     })
 }
 
 function createLogin() {
-    let windowLogin = new BrowserWindow({width: 400, height: 500, center:true, resizable:false, 
+     windowLogin = new BrowserWindow({width: 400, height: 500, center:true, resizable:false, 
                                      minimizable: false, maximizable: false, fullscreen: false,
                                      skipTaskbar: false, title      : 'Login'});
 
@@ -47,7 +49,6 @@ function createLogin() {
       windowLogin.loadURL(urlLogin)
       windowLogin.on('closed', () => {
         windowLogin = null
-        settings.delete('auth');
       })
       
       ipcMainLogin();
@@ -76,17 +77,30 @@ app.on('activate', function () {
 
 
 function ipcMainLogin(){
-    ipcMain.on('loginMain', async (event, arg) => {               
+    ipcMain.on('loginMain', async (event, arg) => {  
+        let isLogin  = false;
         let findUser = await db.sequelize.query(`SELECT * FROM Users Where username='${arg.username}' COLLATE Latin1_General_CS_AS_KS_WS  ORDER BY id OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY `,{ type: db.sequelize.QueryTypes.SELECT});
-        if (findUser.length>0) {                
-            console.log("si existe el usuario")           
+        if (findUser.length>0) {   
+         if( !bcrypt.compareSync(arg.password, findUser[0].password)){
+                isLogin = false;
+           }else{
+                isLogin = true;
+                settings.set('auth', findUser[0]);
+                console.log(settings.getAll())
+           }                              
         }else{
-            console.log("no existe")
+            isLogin = false
         }
-        event.sender.send('loginRender', 'pong')
-         
+        event.sender.send('loginRender', {isLogin: isLogin})         
        });
-}
+
+       ipcMain.on('sendHome', (event, arg) => {           
+            windowLogin.close(); 
+            createWindow();           
+       });
+
+
+}   
 
 
  async function createUsers(){
