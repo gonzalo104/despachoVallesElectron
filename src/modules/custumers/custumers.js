@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import { Container, Header, Table, Grid, Dimmer, Loader, Select, Button, Icon} from 'semantic-ui-react';
+import { Container, Header, Table, Grid, Select, Button, Icon, Pagination} from 'semantic-ui-react';
 import ModalSaveEdit from './components/modalSaveEdit';
-const {ipcRenderer} = window.require('electron')
+import Loading from 'react-fullscreen-loading';
+const {ipcRenderer, remote} = window.require('electron');
 
-
-const options = [
-  {key: 'n', text: 'Selecciona un abogado', value: ''},
-  { key: 'm', text: 'Male', value: 'male' },
-  { key: 'f', text: 'Female', value: 'female' },
-]
 
 export default class Custumers extends Component {
 
@@ -16,33 +11,52 @@ export default class Custumers extends Component {
   constructor(){
     super()
     this.state = {
-      openModal    : false,
-      typeModal    : '',
-      custumers    : [],
-      optLawyers   : [],
-      id           : 0,
-      name         : '',
-      email        : '',
-      movil        : '',
-      phone        : '',
-      lawyer_id    : '',
-      type_custumer: '',
-      comments     : '',
+      overlay          : false,
+      openModal        : false,
+      typeModal        : '',
+      custumers        : [],
+      optLawyers       : [],
+      id               : 0,
+      name             : '',
+      email            : '',
+      movil            : '',
+      phone            : '',
+      lawyer_id        : '',
+      type_custumer    : '',
+      comments         : '',
+      errorMessages    : [],
+      movilError       : false,
+      phoneError       : false,
+      nameError        : false,
+      emailError       : false,
+      lawyerError      : false,
+      typeCustumerError: false,
     }
   }
   
+ 
   
 
   componentDidMount(){
-    ipcRenderer.on('list-custumers-reply', (event, arg) => {
-      console.log(arg)
-      this.setState({custumers: arg});
-    })
+    this.ipcRenderReply();    
     ipcRenderer.send('list-custumers', 'ping')
   } 
 
-  handleApi = (obj) => {
-    console.log("jalo: ", obj)
+
+  ipcRenderReply(){
+
+    ipcRenderer.on('list-custumers-reply', (event, arg) => {      
+      this.setState({custumers: arg.custumers, optLawyers: arg.lawyers});
+    })
+    
+    ipcRenderer.on('saveEdit-custumer-reply',(event, arg) => {        
+        this.setState({custumers: arg.  custumers, overlay:false});     
+        let message = arg.success ? 'Se registro correctamente el cliente' : 'Problemas para registrar el cliente, Intente más tarde';
+        let notify  = new remote.Notification({title:'¡Atención!' ,body: message});
+        notify.show();  
+        console.log(arg)        
+    })  
+
   }
 
   closeModal = () => {
@@ -51,21 +65,27 @@ export default class Custumers extends Component {
   }
 
 
-  handleChangeForm = (e, {value ,name}) => {
-    console.log(name, value)
+  handleChangeForm = (e, {value ,name}) => {    
     this.setState({[name]: value,});    
   }
 
   clearForm = () =>{
     this.setState({  
-      id           : 0,
-      name         : '',
-      email        : '',
-      movil        : '',
-      phone        : '',
-      lawyer_id    : '',
-      type_custumer: '',
-      comments     : '',
+      id               : 0,
+      name             : '',
+      email            : '',
+      movil            : '',
+      phone            : '',
+      lawyer_id        : '',
+      type_custumer    : '',
+      comments         : '',
+      errorMessages    : [],
+      movilError       : false,
+      phoneError       : false,
+      nameError        : false,
+      emailError       : false,
+      lawyerError      : false,
+      typeCustumerError: false,
     });
   }
 
@@ -84,6 +104,61 @@ export default class Custumers extends Component {
     });
   }
 
+  validateFields = () => {
+    this.removeErrors();
+    let messages = [];
+    /****VAlidate Name****/
+    if (this.state.name.length < 8) {
+        messages.push('El nombre debe tener al menos 8 caracteres');
+        this.setState({nameError: true});
+    }
+    /****VAlidate EMAIL****/
+    if (this.state.email.length > 0) {
+      let expEmail = /\S+@\S+\.\S+/;
+      if(!expEmail.test(this.state.email)){
+        messages.push('El correo no es válido');
+        this.setState({emailError: true})
+      }
+    }
+    /****VAlidate MOVIL****/
+    if (this.state.movil.length > 0) {
+      let expMovil = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+        if (!expMovil.test(this.state.movil)) {
+          messages.push('Ingrese un celular válido, (ejemplo: (481)9873519 )');
+          this.setState({movilError: true})
+        }
+    }
+
+      /****VAlidate PHONE****/
+      if (this.state.phone.length > 0) {
+        let expPhone = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+          if (!expPhone.test(this.state.phone)) {
+            messages.push('Ingrese un télefono válido, (ejemplo: (481)9873519 )');
+            this.setState({phoneError: true})
+          }
+      }
+      this.setState({errorMessages: messages});
+
+      if (this.state.errorMessages.length === 0) {
+          this.setState({overlay:true});
+          this.closeModal();
+          const {id, name, email, movil, phone, lawyer_id, type_custumer, comments, typeModal } = this.state;
+          ipcRenderer.send('saveEdit-custumer', {id, name, email, movil, phone, lawyer_id, type_custumer, comments, type: typeModal } );
+        
+      }
+  }
+
+  removeErrors = () =>{
+    this.setState({
+      errorMessages    : [],
+      movilError       : false,
+      phoneError       : false,
+      nameError        : false,
+      emailError       : false,
+      lawyerError      : false,
+      typeCustumerError: false,
+    });
+  }
 
   render() {
     return (
@@ -97,7 +172,7 @@ export default class Custumers extends Component {
           <Button positive onClick={ () => {this.setState({openModal: true, typeModal: 'new'})}} >Nuevo Cliente</Button>      
       </Header>
       <Header as='h5' floated='right'>
-      <Select placeholder='Selecciona un abogado' options={options} />
+      <Select placeholder='Selecciona un abogado' options={this.state.optLawyers.map( obj => {return {key: obj.dataValues.id, text: obj.dataValues.name, value: obj.dataValues.id}})}  />
       </Header>        
       </Grid.Column>
     </Grid>
@@ -131,8 +206,8 @@ export default class Custumers extends Component {
                        <Table.Cell>{obj.dataValues.type_custumer}</Table.Cell>
                        <Table.Cell>{obj.dataValues.comments}</Table.Cell>
                        <Table.Cell textAlign="center">                                                                                        
-                         <Icon color="blue" name='edit' onClick={ () => this.prepareModal(obj)} />
-                         <Icon color="red" name='delete' onClick={()=>{console.log("deleted")}} />
+                         <a href="javascript:void(0)"><Icon color="blue" name='edit' onClick={ () => this.prepareModal(obj)} /></a>
+                         <a href="javascript:void(0)"><Icon color="red" name='delete' onClick={()=>{console.log("deleted")}} /></a>
                        </Table.Cell>
                      </Table.Row>
                    )
@@ -141,16 +216,18 @@ export default class Custumers extends Component {
                 }                                                                    
               </Table.Body>
 
-              <Table.Footer>                                 
-              </Table.Footer>
-            </Table>
+              <Table.Footer>  
+             
+              </Table.Footer>              
+            </Table>            
           : 
           <h4>No hay clientes para mostrar</h4>
         }
-        
+        <Pagination defaultActivePage={5} totalPages={10} />
       </Grid.Column>
     </Grid>
-       <ModalSaveEdit openM={this.state.openModal} type={this.state.typeModal} closeModal={this.closeModal} handleChange={this.handleChangeForm} values={this.state}/>
+       <ModalSaveEdit openM={this.state.openModal} type={this.state.typeModal} closeModal={this.closeModal} handleChange={this.handleChangeForm} values={this.state} validateFields={this.validateFields}/>                   
+       <Loading loading={this.state.overlay} background="rgba(33, 133, 208, 0.7" loaderColor="white" />
     </Container>        
 
     )
