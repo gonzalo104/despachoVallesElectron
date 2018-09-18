@@ -12,7 +12,7 @@ export default class Custumers extends Component {
     super()
     this.state = {
       page             : 1,
-      paginate         : 2,
+      paginate         : 100,
       totalpages       : 0,
       overlay          : false,
       openModal        : false,
@@ -41,6 +41,7 @@ export default class Custumers extends Component {
   
 
   componentDidMount(){
+    this.setState({overlay: true});
     this.ipcRenderReply();    
     ipcRenderer.send('list-custumers', {page: this.state.page, paginate: this.state.paginate})
   } 
@@ -49,20 +50,19 @@ export default class Custumers extends Component {
   ipcRenderReply(){
 
     ipcRenderer.on('list-custumers-reply', (event, arg) => {      
-      this.setState({custumers: arg.pagination.docs, optLawyers: arg.lawyers, totalpages: arg.pagination.pages});
+      this.setState({custumers: arg.pagination.docs, optLawyers: arg.lawyers, totalpages: arg.pagination.pages, overlay:false});
       console.log(arg);
     })
     
     ipcRenderer.on('saveEdit-custumer-reply',(event, arg) => {        
-        this.setState({custumers: arg.custumers.docs, overlay:false});     
+        this.setState({custumers: arg.custumers.docs, overlay:false, totalpages: arg.custumers.pages});     
         let message = arg.success ? 'Se registro correctamente el cliente' : 'Problemas para registrar el cliente, Intente más tarde';
         let notify  = new remote.Notification({title:'¡Atención!' ,body: message});
-        notify.show();  
-        console.log(arg)        
+        notify.show();              
     })  
 
     ipcRenderer.on('pagination-custumers-reply', (event, arg) => {      
-      this.setState({custumers: arg.custumers.docs});
+      this.setState({custumers: arg.custumers.docs, overlay: false, totalpages: arg.custumers.pages});
     });
 
   }
@@ -113,10 +113,11 @@ export default class Custumers extends Component {
   }
 
   validateFields = () => {
+    
     this.removeErrors();
     let messages = [];
     /****VAlidate Name****/
-    if (this.state.name.length < 8) {
+    if (this.state.name.length < 8) {      
         messages.push('El nombre debe tener al menos 8 caracteres');
         this.setState({nameError: true});
     }
@@ -147,7 +148,7 @@ export default class Custumers extends Component {
       }
       this.setState({errorMessages: messages});
 
-      if (this.state.errorMessages.length === 0) {
+      if (messages.length === 0) {
           this.setState({overlay:true});
           this.closeModal();
           const {id, name, email, movil, phone, lawyer_id, type_custumer, comments, typeModal, page, paginate } = this.state;
@@ -169,7 +170,7 @@ export default class Custumers extends Component {
   }
 
   handlePaginationChange = (e, { activePage }) => {
-    this.setState({page: activePage});
+    this.setState({page: activePage, overlay:true});
     ipcRenderer.send('pagination-custumers',{page: activePage, paginate: this.state.paginate});
   }
 
@@ -233,7 +234,11 @@ export default class Custumers extends Component {
               <Table.Footer>  
                 <Table.Row>
                   <Table.HeaderCell colSpan='8' textAlign="right">
-                  <Pagination  onPageChange={this.handlePaginationChange}  defaultActivePage={this.state.page} totalPages={this.state.totalpages} />    
+                  {
+                    this.state.totalpages > 1 ?
+                    <Pagination  onPageChange={this.handlePaginationChange}  defaultActivePage={this.state.page} totalPages={this.state.totalpages} />: 
+                    ""
+                  }                  
                   </Table.HeaderCell>
                 </Table.Row>              
               </Table.Footer>              

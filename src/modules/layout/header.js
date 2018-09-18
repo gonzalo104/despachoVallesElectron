@@ -1,11 +1,23 @@
 import React, { Component } from 'react'
 import { Button, Dropdown, Menu } from 'semantic-ui-react'
+import {withRouter} from 'react-router-dom';
 import  './styles.css';
 
-export default class Home extends Component {
+ class Home extends Component {
   state = { activeItem: 'Clientes' }
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name })
+    switch (name) {
+      case 'Clientes': 
+            this.props.history.push('/')   
+        break;
+      case 'Citas': 
+            this.props.history.push('/appointments')
+      default: 
+        break;
+    }    
+  }
 
   render() {
     const { activeItem } = this.state
@@ -34,3 +46,4 @@ export default class Home extends Component {
     )
   }
 }
+export default withRouter(Home);
