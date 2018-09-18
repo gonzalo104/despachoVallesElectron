@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
-const Op = Sequelize.Op
+const Op                = Sequelize.Op
+const sequelizePaginate = require('sequelize-paginate')
 
 const sequelize = new Sequelize('despacho5', 'sa', 'gonzalozame04', {
   //host            : 'DESKTOP-HTB2RFD',
@@ -46,6 +47,10 @@ db.CaseFile.hasMany(db.Payment, {foreignKey: 'casefile_id'});
 db.Payment.belongsTo(db.CaseFile, {foreignKey: 'casefile_id'});
 db.Appointment.belongsTo(db.Custumer, {foreignKey: 'custumer_id'});
 db.Appointment.belongsTo(db.Lawyer, {foreignKey: 'lawyer_id'});
+
+/***PAGINATION */
+sequelizePaginate.paginate(db.Custumer);
+
 
 //sequelize.sync().then(() => console.log("**************** Funcionó correctamente la sincronización *********************** \n Ha trabajar!!!")).catch((err) => console.log("*****************+*** ERROR **************************: \n",err));
 

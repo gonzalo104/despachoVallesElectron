@@ -11,6 +11,9 @@ export default class Custumers extends Component {
   constructor(){
     super()
     this.state = {
+      page             : 1,
+      paginate         : 2,
+      totalpages       : 0,
       overlay          : false,
       openModal        : false,
       typeModal        : '',
@@ -39,23 +42,28 @@ export default class Custumers extends Component {
 
   componentDidMount(){
     this.ipcRenderReply();    
-    ipcRenderer.send('list-custumers', 'ping')
+    ipcRenderer.send('list-custumers', {page: this.state.page, paginate: this.state.paginate})
   } 
 
 
   ipcRenderReply(){
 
     ipcRenderer.on('list-custumers-reply', (event, arg) => {      
-      this.setState({custumers: arg.custumers, optLawyers: arg.lawyers});
+      this.setState({custumers: arg.pagination.docs, optLawyers: arg.lawyers, totalpages: arg.pagination.pages});
+      console.log(arg);
     })
     
     ipcRenderer.on('saveEdit-custumer-reply',(event, arg) => {        
-        this.setState({custumers: arg.  custumers, overlay:false});     
+        this.setState({custumers: arg.custumers.docs, overlay:false});     
         let message = arg.success ? 'Se registro correctamente el cliente' : 'Problemas para registrar el cliente, Intente más tarde';
         let notify  = new remote.Notification({title:'¡Atención!' ,body: message});
         notify.show();  
         console.log(arg)        
     })  
+
+    ipcRenderer.on('pagination-custumers-reply', (event, arg) => {      
+      this.setState({custumers: arg.custumers.docs});
+    });
 
   }
 
@@ -142,8 +150,8 @@ export default class Custumers extends Component {
       if (this.state.errorMessages.length === 0) {
           this.setState({overlay:true});
           this.closeModal();
-          const {id, name, email, movil, phone, lawyer_id, type_custumer, comments, typeModal } = this.state;
-          ipcRenderer.send('saveEdit-custumer', {id, name, email, movil, phone, lawyer_id, type_custumer, comments, type: typeModal } );
+          const {id, name, email, movil, phone, lawyer_id, type_custumer, comments, typeModal, page, paginate } = this.state;
+          ipcRenderer.send('saveEdit-custumer', {id, name, email, movil, phone, lawyer_id, type_custumer, comments, type: typeModal, page, paginate } );
         
       }
   }
@@ -159,6 +167,12 @@ export default class Custumers extends Component {
       typeCustumerError: false,
     });
   }
+
+  handlePaginationChange = (e, { activePage }) => {
+    this.setState({page: activePage});
+    ipcRenderer.send('pagination-custumers',{page: activePage, paginate: this.state.paginate});
+  }
+
 
   render() {
     return (
@@ -217,13 +231,18 @@ export default class Custumers extends Component {
               </Table.Body>
 
               <Table.Footer>  
-             
+                <Table.Row>
+                  <Table.HeaderCell colSpan='8' textAlign="right">
+                  <Pagination  onPageChange={this.handlePaginationChange}  defaultActivePage={this.state.page} totalPages={this.state.totalpages} />    
+                  </Table.HeaderCell>
+                </Table.Row>              
               </Table.Footer>              
             </Table>            
           : 
           <h4>No hay clientes para mostrar</h4>
+          
         }
-        <Pagination defaultActivePage={5} totalPages={10} />
+        
       </Grid.Column>
     </Grid>
        <ModalSaveEdit openM={this.state.openModal} type={this.state.typeModal} closeModal={this.closeModal} handleChange={this.handleChangeForm} values={this.state} validateFields={this.validateFields}/>                   
