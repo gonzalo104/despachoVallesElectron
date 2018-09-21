@@ -5,6 +5,7 @@ import Header from './modules/layout/header';
 import Custumers from './modules/custumers/custumers'
 import Appointments from './modules/appointments/appointments';
 import CaseFile from './modules/caseFile/caseFile';
+import Users from './modules/users/users';
 
 
 
@@ -19,6 +20,7 @@ class App extends Component {
           <Route exact path = "/" component = { Custumers }/>      
           <Route exact path = "/appointments" component={Appointments}/>      
           <Route exact path="/casefile" component={CaseFile}/> 
+          <Route exact path="/users" component={Users}/>
         </div>
       </BrowserRouter>      
       

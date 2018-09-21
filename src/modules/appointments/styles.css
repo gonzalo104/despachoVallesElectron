@@ -5,3 +5,9 @@
     border-radius: .28571429rem;
     padding      : 4px;
 }
+
+
+.test input:only-read{
+   
+    background-color: green;
+}

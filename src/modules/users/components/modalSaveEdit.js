@@ -1,13 +1,11 @@
 import React from 'react';
-import { Form, Modal, Button, Message,Grid} from 'semantic-ui-react';
-import DatePicker from 'react-date-picker';
-import '../styles.css';
+import { Form, Modal, Button, Message} from 'semantic-ui-react';
 
 const ModalAppointment = (props) => {
     
         return (
             <Modal open={props.values.openModal}>
-            <Modal.Header >{props.values.type === 'new' ? 'Nueva Cita' : 'Editar Cita'}</Modal.Header>
+            <Modal.Header >{props.values.type === 'new' ? 'Nuevo usuario' : 'Editar usuario'}</Modal.Header>
             <Modal.Content>   
             {
                 props.values.errorMessages.length > 0 ?                 
@@ -15,12 +13,7 @@ const ModalAppointment = (props) => {
                 ''
             
             }
-            <Grid>                    
-                    <Grid.Column width={16} textAlign="center">   
-                        <label style={{fontWeight: 700, color: 'rgba(0,0,0,.87)',fontSize: '.92857143em', margin: '0 0 .28571429rem 0'}}>Fecha de la cita* &nbsp;&nbsp;</label>
-                        <div className="test"><DatePicker showLeadingZeros={true} locale="es-MX"  onChange={props.clendarChange} value={props.values.date_appointment}  minDate={new Date()}/></div>
-                    </Grid.Column>
-            </Grid> <br/>
+            
             <Form>                                
                 <Form.Group widths='equal'>
                     <Form.Select fluid label='Cliente*' name="custumer_id"  placeholder='Seleccione un cliente' options={[]} />

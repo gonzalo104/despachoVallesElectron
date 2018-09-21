@@ -50,6 +50,7 @@ db.Appointment.belongsTo(db.Lawyer, {foreignKey: 'lawyer_id'});
 
 /***PAGINATION */
 sequelizePaginate.paginate(db.Custumer);
+sequelizePaginate.paginate(db.User);
 
 
 //sequelize.sync().then(() => console.log("**************** Funcionó correctamente la sincronización *********************** \n Ha trabajar!!!")).catch((err) => console.log("*****************+*** ERROR **************************: \n",err));

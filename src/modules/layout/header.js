@@ -18,6 +18,9 @@ import  './styles.css';
       case 'Expedientes': 
             this.props.history.push('/casefile');
          break;
+      case 'Usuarios': 
+            this.props.history.push('/users');
+        break;
       default: 
         break;
     }    
@@ -34,7 +37,7 @@ import  './styles.css';
         <Menu.Item name='Finanzas' active={activeItem === 'Finanzas'} onClick={this.handleItemClick}/>        
         <Dropdown item text='Herramientas'>
             <Dropdown.Menu>
-              <Dropdown.Item>Usuarios</Dropdown.Item>
+              <Dropdown.Item name="Usuarios" onClick={this.handleItemClick}>Usuarios</Dropdown.Item>
               <Dropdown.Item>Respaldo DB</Dropdown.Item>
               <Dropdown.Item>Ayuda</Dropdown.Item>
             </Dropdown.Menu>
