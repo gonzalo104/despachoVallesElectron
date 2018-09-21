@@ -29,7 +29,7 @@ import Dropdowns from '../../../utiles/dropdowns';
                     <Form.Input fluid label='Télefono' placeholder='Télefono' error={props.values.phoneError} value={props.values.phone} name="phone" onChange={ props.handleChange} />
                 </Form.Group>
                 <Form.Group widths='equal'>
-                    <Form.Select fluid label='Abogado*' name="lawyer_id" value={props.values.lawyer_id} options={props.values.optLawyers.map(obj => {return {key: obj.dataValues.id, text: obj.dataValues.name, value: obj.dataValues.id}})} placeholder='Seleccione un abogado' onChange={ props.handleChange} />
+                    <Form.Select fluid label='Abogado*' name="lawyer_id" value={props.values.lawyer_id} options={props.values.optLawyers.map(obj => {return {key: obj.id, text: obj.name, value: obj.id}})} placeholder='Seleccione un abogado' onChange={ props.handleChange} />
                     <Form.Select fluid label='Tipo de cliente*' name="type_custumer" value={props.values.type_custumer} options={Dropdowns.TYPES_CUSTUMERS()} placeholder='Seleccione un tipo de cliente' onChange={ props.handleChange}/>
                 </Form.Group>          
                 <Form.TextArea label='Commentarios' name="comments" value={props.values.comments} placeholder='Escribir algunos commentarios para el cliente' onChange={ props.handleChange}/>           

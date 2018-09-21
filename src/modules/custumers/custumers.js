@@ -5,6 +5,7 @@ import Loading from 'react-fullscreen-loading';
 const {ipcRenderer, remote} = window.require('electron');
 
 
+
 export default class Custumers extends Component {
 
 
@@ -12,7 +13,7 @@ export default class Custumers extends Component {
     super()
     this.state = {
       page             : 1,
-      paginate         : 100,
+      paginate         : 30,
       totalpages       : 0,
       overlay          : false,
       openModal        : false,
@@ -43,27 +44,23 @@ export default class Custumers extends Component {
   componentDidMount(){
     this.setState({overlay: true});
     this.ipcRenderReply();    
-    ipcRenderer.send('list-custumers', {page: this.state.page, paginate: this.state.paginate})
+   
+    let getCustumers = ipcRenderer.sendSync('list-custumers', {page: this.state.page, paginate: this.state.paginate});
+    this.setState({custumers: getCustumers.pagination.docs, optLawyers: getCustumers.lawyers, totalpages: getCustumers.pagination.pages, overlay:false});
+
   } 
+
+  componentWillUnmount(){
+    this.mounted = false;
+  }
 
 
   ipcRenderReply(){
 
-    ipcRenderer.on('list-custumers-reply', (event, arg) => {      
-      this.setState({custumers: arg.pagination.docs, optLawyers: arg.lawyers, totalpages: arg.pagination.pages, overlay:false});
-      console.log(arg);
-    })
+   
     
-    ipcRenderer.on('saveEdit-custumer-reply',(event, arg) => {        
-        this.setState({custumers: arg.custumers.docs, overlay:false, totalpages: arg.custumers.pages});     
-        let message = arg.success ? 'Se registro correctamente el cliente' : 'Problemas para registrar el cliente, Intente más tarde';
-        let notify  = new remote.Notification({title:'¡Atención!' ,body: message});
-        notify.show();              
-    })  
-
-    ipcRenderer.on('pagination-custumers-reply', (event, arg) => {      
-      this.setState({custumers: arg.custumers.docs, overlay: false, totalpages: arg.custumers.pages});
-    });
+   
+   
 
   }
 
@@ -101,14 +98,14 @@ export default class Custumers extends Component {
     this.setState({
       openModal    : true,
       typeModal    : 'edit',
-      id           : obj.dataValues.id,
-      name         : obj.dataValues.name,
-      email        : obj.dataValues.email ? obj.dataValues.email      : '',
-      movil        : obj.dataValues.movil ? obj.dataValues.movil      : '',
-      phone        : obj.dataValues.phone ? obj.dataValues.phone      : '',
-      lawyer_id    : obj.dataValues.lawyer_id,
-      type_custumer: obj.dataValues.type_custumer,
-      comments     : obj.dataValues.comments ? obj.dataValues.comments: '',
+      id           : obj.id,
+      name         : obj.name,
+      email        : obj.email ? obj.email      : '',
+      movil        : obj.movil ? obj.movil      : '',
+      phone        : obj.phone ? obj.phone      : '',
+      lawyer_id    : obj.lawyer_id,
+      type_custumer: obj.type_custumer,
+      comments     : obj.comments ? obj.comments: '',
     });
   }
 
@@ -152,8 +149,11 @@ export default class Custumers extends Component {
           this.setState({overlay:true});
           this.closeModal();
           const {id, name, email, movil, phone, lawyer_id, type_custumer, comments, typeModal, page, paginate } = this.state;
-          ipcRenderer.send('saveEdit-custumer', {id, name, email, movil, phone, lawyer_id, type_custumer, comments, type: typeModal, page, paginate } );
-        
+          let   saveEdit                                                                                        = ipcRenderer.sendSync('saveEdit-custumer', {id, name, email, movil, phone, lawyer_id, type_custumer, comments, type: typeModal, page, paginate } );
+          this.setState({custumers: saveEdit.custumers.docs, overlay:false, totalpages: saveEdit.custumers.pages}); 
+          let message = saveEdit.success ? 'Se registro correctamente el cliente' : 'Problemas para registrar el cliente, Intente más tarde';
+          let notify  = new remote.Notification({title:'¡Atención!' ,body: message});
+          notify.show();                    
       }
   }
 
@@ -171,7 +171,9 @@ export default class Custumers extends Component {
 
   handlePaginationChange = (e, { activePage }) => {
     this.setState({page: activePage, overlay:true});
-    ipcRenderer.send('pagination-custumers',{page: activePage, paginate: this.state.paginate});
+    let pagination = ipcRenderer.sendSync('pagination-custumers',{page: activePage, paginate: this.state.paginate});
+     this.setState({custumers: pagination.custumers.docs, overlay: false, totalpages: pagination.custumers.pages});
+    
   }
 
 
@@ -187,7 +189,7 @@ export default class Custumers extends Component {
           <Button positive onClick={ () => {this.setState({openModal: true, typeModal: 'new'})}} >Nuevo Cliente</Button>      
       </Header>
       <Header as='h5' floated='right'>
-      <Select placeholder='Selecciona un abogado' options={this.state.optLawyers.map( obj => {return {key: obj.dataValues.id, text: obj.dataValues.name, value: obj.dataValues.id}})}  />
+      <Select placeholder='Selecciona un abogado' options={this.state.optLawyers.map( obj => {return {key: obj.id, text: obj.name, value: obj.id}})}  />
       </Header>        
       </Grid.Column>
     </Grid>
@@ -195,7 +197,7 @@ export default class Custumers extends Component {
      <Grid>
       <Grid.Column width={16}>
         {this.state.custumers.length > 0 ? 
-            <Table celled textAlign="center">
+            <Table celled >
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>Nombre</Table.HeaderCell>
@@ -213,13 +215,13 @@ export default class Custumers extends Component {
                 { this.state.custumers.map((obj, i) => {
                    return (
                      <Table.Row key={i}>
-                       <Table.Cell>{obj.dataValues.name}</Table.Cell>
-                       <Table.Cell>{obj.dataValues.email}</Table.Cell>
-                       <Table.Cell>{obj.dataValues.movil}</Table.Cell>
-                       <Table.Cell>{obj.dataValues.phone}</Table.Cell>
-                       <Table.Cell>{obj.Lawyer.dataValues.name}</Table.Cell>
-                       <Table.Cell>{obj.dataValues.type_custumer}</Table.Cell>
-                       <Table.Cell>{obj.dataValues.comments}</Table.Cell>
+                       <Table.Cell>{obj.name}</Table.Cell>
+                       <Table.Cell>{obj.email}</Table.Cell>
+                       <Table.Cell>{obj.movil}</Table.Cell>
+                       <Table.Cell>{obj.phone}</Table.Cell>
+                       <Table.Cell>{obj.Lawyer.name}</Table.Cell>
+                       <Table.Cell>{obj.type_custumer}</Table.Cell>
+                       <Table.Cell>{obj.comments}</Table.Cell>
                        <Table.Cell textAlign="center">                                                                                        
                          <a href="javascript:void(0)"><Icon color="blue" name='edit' onClick={ () => this.prepareModal(obj)} /></a>
                          <a href="javascript:void(0)"><Icon color="red" name='delete' onClick={()=>{console.log("deleted")}} /></a>

@@ -4,6 +4,7 @@ import {HashRouter, Route, BrowserRouter} from "react-router-dom";
 import Header from './modules/layout/header';
 import Custumers from './modules/custumers/custumers'
 import Appointments from './modules/appointments/appointments';
+import CaseFile from './modules/caseFile/caseFile';
 
 
 
@@ -16,7 +17,8 @@ class App extends Component {
         <div>
           <Header/>
           <Route exact path = "/" component = { Custumers }/>      
-          <Route exact path = "/appointments" component={Appointments}/>       
+          <Route exact path = "/appointments" component={Appointments}/>      
+          <Route exact path="/casefile" component={CaseFile}/> 
         </div>
       </BrowserRouter>      
       

@@ -14,6 +14,10 @@ import  './styles.css';
         break;
       case 'Citas': 
             this.props.history.push('/appointments')
+         break;
+      case 'Expedientes': 
+            this.props.history.push('/casefile');
+         break;
       default: 
         break;
     }    
@@ -27,13 +31,12 @@ import  './styles.css';
         <Menu.Item name='Clientes' active={activeItem === 'Clientes'} onClick={this.handleItemClick} />
         <Menu.Item name='Citas' active={activeItem === 'Citas'} onClick={this.handleItemClick}/>
         <Menu.Item name='Expedientes' active={activeItem === 'Expedientes'} onClick={this.handleItemClick}/>
-        <Menu.Item name='Finanzas' active={activeItem === 'Finanzas'} onClick={this.handleItemClick}/>
-        <Menu.Item name='Catálagos' active={activeItem === 'Catálagos'} onClick={this.handleItemClick}/>      
+        <Menu.Item name='Finanzas' active={activeItem === 'Finanzas'} onClick={this.handleItemClick}/>        
         <Dropdown item text='Herramientas'>
             <Dropdown.Menu>
-              <Dropdown.Item>English</Dropdown.Item>
-              <Dropdown.Item>Russian</Dropdown.Item>
-              <Dropdown.Item>Spanish</Dropdown.Item>
+              <Dropdown.Item>Usuarios</Dropdown.Item>
+              <Dropdown.Item>Respaldo DB</Dropdown.Item>
+              <Dropdown.Item>Ayuda</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
 
